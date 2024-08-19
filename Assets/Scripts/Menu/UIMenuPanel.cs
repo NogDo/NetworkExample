@@ -55,9 +55,7 @@ public class UIMenuPanel : MonoBehaviour
     /// </summary>
     void OnPlayerNameChangeButtonClick()
     {
-        PhotonNetwork.LocalPlayer.NickName = inputPlayerName.text;
-
-        playerName.text = $"안녕하세요, {PhotonNetwork.LocalPlayer.NickName}";
+        CSqlManager.Instance.ChangeNickName(inputPlayerName.text, ChangeNickNameSuccess, ChangeNickNameFailure);
     }
 
     /// <summary>
@@ -136,5 +134,23 @@ public class UIMenuPanel : MonoBehaviour
     {
         panelMainMenu.gameObject.SetActive(true);
         panelCreateRoomMenu.gameObject.SetActive(false);
+    }
+
+    /// <summary>
+    /// 닉네임 변경에 성공했을 때, 포톤 서버 로컬 플레이어의 닉네임과 Text를 변경한다.
+    /// </summary>
+    void ChangeNickNameSuccess()
+    {
+        PhotonNetwork.LocalPlayer.NickName = inputPlayerName.text;
+
+        playerName.text = $"안녕하세요, {PhotonNetwork.LocalPlayer.NickName}";
+    }
+
+    /// <summary>
+    /// 닉네임 변경에 실패했을 때, 로그 메세지를 띄운다.
+    /// </summary>
+    void ChangeNickNameFailure()
+    {
+        UILogManager.Log("닉네임 변경 실패.");
     }
 }
