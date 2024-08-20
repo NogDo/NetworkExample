@@ -12,6 +12,8 @@ public class UILoginPanel : MonoBehaviour
 
     public Button buttonSignup;
     public Button buttonLogin;
+    public Button buttonSignupHW;
+    public Button buttonLoginHW;
     #endregion
 
     #region private 변수
@@ -22,6 +24,8 @@ public class UILoginPanel : MonoBehaviour
     {
         buttonSignup.onClick.AddListener(OnSignupButtonClick);
         buttonLogin.onClick.AddListener(OnLoginButtonClick);
+        buttonSignupHW.onClick.AddListener(OnSignupButtonClick_HW0820);
+        buttonLoginHW.onClick.AddListener(OnLoginButtonClick_HW0820);
     }
 
     void OnEnable()
@@ -43,13 +47,36 @@ public class UILoginPanel : MonoBehaviour
     /// </summary>
     public void OnLoginButtonClick()
     {
-        CSqlManager.Instance.Login(inputID.text, inputPassword.text, LoginSuccess, LoginFailure);
+        PhotonNetwork.LocalPlayer.NickName = oNickName;
+        PhotonNetwork.ConnectUsingSettings();
+
+        inputID.interactable = false;
+        inputPassword.interactable = false;
+
+        buttonSignup.interactable = false;
+        buttonLogin.interactable = false;
     }
 
     /// <summary>
     /// 회원가입 버튼 클릭
     /// </summary>
     public void OnSignupButtonClick()
+    {
+
+    }
+
+    /// <summary>
+    /// 로그인 버튼 클릭(과제)
+    /// </summary>
+    public void OnLoginButtonClick_HW0820()
+    {
+        CSqlManager.Instance.Login(inputID.text, inputPassword.text, LoginSuccess, LoginFailure);
+    }
+
+    /// <summary>
+    /// 회원가입 버튼 클릭(과제)
+    /// </summary>
+    public void OnSignupButtonClick_HW0820()
     {
         CSqlManager.Instance.Signup(inputID.text, inputPassword.text, oNickName, SignupSuccess, SignupFailure);
     }

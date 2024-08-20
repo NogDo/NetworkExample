@@ -32,6 +32,11 @@ public class UIRoomPanel : MonoBehaviour
             // 플레이어 목록에 플레이어 이름표 하나씩 생성
             JoinPlayer(player);
         }
+
+        buttonStart.gameObject.SetActive(PhotonNetwork.IsMasterClient);
+
+        // 방에 입장 했을 때, 방장의 씬 로드 여부에 따라 함께 씬 로드
+        PhotonNetwork.AutomaticallySyncScene = true;
     }
 
     void OnDisable()
@@ -47,7 +52,11 @@ public class UIRoomPanel : MonoBehaviour
     /// </summary>
     void OnStartButtonClick()
     {
-
+        // Photon을 통해 플레이어들과 씬을 동기화하여 로드
+        if (PhotonNetwork.IsMasterClient)
+        {
+            PhotonNetwork.LoadLevel("GameScene");
+        }
     }
 
     /// <summary>
@@ -56,6 +65,8 @@ public class UIRoomPanel : MonoBehaviour
     void OnCancelButtonClick()
     {
         PhotonNetwork.LeaveRoom();
+        // 시간 지연으로 인해 방을 퇴장하였는데 방장의 시작 콜에 의해 씬이 넘어가는것을 방지
+        PhotonNetwork.AutomaticallySyncScene = false;
     }
 
     /// <summary>

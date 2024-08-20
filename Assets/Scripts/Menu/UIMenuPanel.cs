@@ -13,6 +13,7 @@ public class UIMenuPanel : MonoBehaviour
     [Header("플레이어 닉네임 변경 관련")]
     public InputField inputPlayerName;
     public Button buttonPlayerNameChange;
+    public Button buttonPlayerNameChangeHW;
 
     [Header("메인 메뉴 관련")]
     public RectTransform panelMainMenu;
@@ -32,6 +33,7 @@ public class UIMenuPanel : MonoBehaviour
     void Awake()
     {
         buttonPlayerNameChange.onClick.AddListener(OnPlayerNameChangeButtonClick);
+        buttonPlayerNameChangeHW.onClick.AddListener(OnPlayerNameChangeButtonClick_HW0820);
 
         buttonCreateRoom.onClick.AddListener(OnCreateRoomButtonClick);
         buttonFindRoom.onClick.AddListener(OnFindRoomButtonClick);
@@ -54,6 +56,16 @@ public class UIMenuPanel : MonoBehaviour
     /// 플레이어 닉네임 변경 버튼 클릭
     /// </summary>
     void OnPlayerNameChangeButtonClick()
+    {
+        PhotonNetwork.LocalPlayer.NickName = inputPlayerName.text;
+
+        playerName.text = $"안녕하세요, {PhotonNetwork.LocalPlayer.NickName}";
+    }
+
+    /// <summary>
+    /// 플레이어 닉네임 변경 버튼 클릭(과제)
+    /// </summary>
+    void OnPlayerNameChangeButtonClick_HW0820()
     {
         CSqlManager.Instance.ChangeNickName(inputPlayerName.text, ChangeNickNameSuccess, ChangeNickNameFailure);
     }
@@ -87,7 +99,9 @@ public class UIMenuPanel : MonoBehaviour
             MaxPlayers = 8
         };
 
-        PhotonNetwork.JoinRandomOrCreateRoom(roomOptions: option);
+        string roomName = $"Random Room {Random.Range(100, 1000)}";
+
+        PhotonNetwork.JoinRandomOrCreateRoom(roomName: roomName, roomOptions: option);
     }
 
     /// <summary>
