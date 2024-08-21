@@ -15,6 +15,8 @@ public class CPlayerContoller : MonoBehaviourPun, IPunObservable
     public Text textHP;
     public Text textShot;
 
+    public GameObject[] eyes;
+
     public float fMoveSpeed = 5.0f;
     public float fShotPower = 15.0f;
     public float fHP = 100.0f;
@@ -96,7 +98,8 @@ public class CPlayerContoller : MonoBehaviourPun, IPunObservable
     /// <summary>
     /// 투사체를 발사한다.
     /// Bomb에 Photon View가 붙을 경우 불필요한 패킷이 교환되는 비효율이 발생 하므로,
-    /// 특정 클라이언트가 Fire를 호출할 경우 다른 클라이언트에게 RPC를 통해 똑같이 Fire를 호출하도록 하고싶음...
+    /// 특정 클라이언트가 Fire를 호출할 경우 다른 클라이언트에게 RPC를 통해 똑같이 Fire를 호출하도록 하고싶음... 
+    /// 추측 항법(Dead Reckoning) 알고리즘을 사용해 투사체는 각 클라이언트에서 생성하도록 Remote Procedure Call을 함
     /// </summary>
     [PunRPC]
     void Fire(Vector3 shotPoint, Vector3 shotDirection, PhotonMessageInfo info)
@@ -113,7 +116,7 @@ public class CPlayerContoller : MonoBehaviourPun, IPunObservable
         bomb.rb.AddForce(shotDirection * fShotPower, ForceMode.Impulse);
         bomb.owner = photonView.Owner;
 
-        // 폭탄의 위치에서 폭탄의 운동량만큼 지연시간동안 진행한 위치로 보정
+        // 폭탄의 위치에서 폭탄의 운동량만큼 지연시간동안 진행한 위치로 보정 (지연 보상)
         bomb.rb.position += bomb.rb.velocity * lag;
     }
 

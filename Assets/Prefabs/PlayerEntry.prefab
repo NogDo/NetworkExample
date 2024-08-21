@@ -603,6 +603,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8426248728717231956}
   - component: {fileID: 6335853599298306290}
+  - component: {fileID: 1853044637235071057}
   m_Layer: 5
   m_Name: Toggle (2)
   m_TagString: Untagged
@@ -680,6 +681,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &1853044637235071057
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4891331972660041808}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738ec2146d9fa94448229e7d6fe4ef2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerEye: 1
 --- !u!1 &5568182222302394519
 GameObject:
   m_ObjectHideFlags: 0
@@ -690,6 +704,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7583557073411944516}
   - component: {fileID: 7702665361430314654}
+  - component: {fileID: 4252917404958269203}
   m_Layer: 5
   m_Name: Toggle (1)
   m_TagString: Untagged
@@ -767,6 +782,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 1
+--- !u!114 &4252917404958269203
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5568182222302394519}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738ec2146d9fa94448229e7d6fe4ef2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerEye: 0
 --- !u!1 &5934883807912630289
 GameObject:
   m_ObjectHideFlags: 0
@@ -781,6 +809,7 @@ GameObject:
   - component: {fileID: 5934883807912630293}
   - component: {fileID: 5934883807912630299}
   - component: {fileID: 5934883807912630298}
+  - component: {fileID: 6451800968969500588}
   m_Layer: 5
   m_Name: PlayerEntry
   m_TagString: Untagged
@@ -898,6 +927,26 @@ MonoBehaviour:
   m_EffectColor: {r: 0, g: 0, b: 0, a: 1}
   m_EffectDistance: {x: 1, y: -1}
   m_UseGraphicAlpha: 1
+--- !u!114 &6451800968969500588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5934883807912630289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff3a4cda1f472584899bdc142325435f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  textPlayerName: {fileID: 5934883807912630295}
+  toggleReady: {fileID: 7246862469235471719}
+  oReadyLabel: {fileID: 8391740080164516554}
+  toggles:
+  - {fileID: 7702665361430314654}
+  - {fileID: 6335853599298306290}
+  - {fileID: 5409517685875958251}
+  toggleGroup: {fileID: 8593137688749532807}
 --- !u!1 &6045742460188418439
 GameObject:
   m_ObjectHideFlags: 0
@@ -1173,6 +1222,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9146994710873677194}
   - component: {fileID: 5409517685875958251}
+  - component: {fileID: 859436863816840879}
   m_Layer: 5
   m_Name: Toggle (3)
   m_TagString: Untagged
@@ -1250,6 +1300,19 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_IsOn: 0
+--- !u!114 &859436863816840879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7603583173241717279}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 738ec2146d9fa94448229e7d6fe4ef2d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerEye: 2
 --- !u!1 &7729054338772667460
 GameObject:
   m_ObjectHideFlags: 0
@@ -1561,7 +1624,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Ready
+  m_Text: Ready!
 --- !u!114 &6736017986509363440
 MonoBehaviour:
   m_ObjectHideFlags: 0

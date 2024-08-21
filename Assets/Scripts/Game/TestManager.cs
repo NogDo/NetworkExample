@@ -62,6 +62,7 @@ public class TestManager : MonoBehaviour
         GameObject playerObj = PhotonNetwork.Instantiate("Players/Player", playerPoistion.position, playerPoistion.rotation);
 
         playerObj.name = $"Player {playerNumber}";
+        playerObj.GetComponent<CPlayerContoller>().eyes[(int)PhotonNetwork.LocalPlayer.CustomProperties["Eyes"]].SetActive(true);
     }
 
     /// <summary>

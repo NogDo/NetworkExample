@@ -27,7 +27,7 @@ public class UILobbyPanel : MonoBehaviour
     {
         foreach (Transform child in roomListRect)
         {
-            Destroy(child.gameObject);
+            //Destroy(child.gameObject);
         }
     }
 
@@ -70,6 +70,8 @@ public class UILobbyPanel : MonoBehaviour
     /// <param name="roomInfo">¹æ Á¤º¸</param>
     public void AddRoomButton(RoomInfo roomInfo)
     {
+        print("AddRoomButton");
+
         Button joinButton = Instantiate(roomButtonPrefab, roomListRect, false);
 
         joinButton.gameObject.name = roomInfo.Name;

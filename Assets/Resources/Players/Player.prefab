@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 2636786310401535985}
   - component: {fileID: -6258746581414865721}
   - component: {fileID: -614869669781973796}
+  - component: {fileID: 307098927776001189}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -110,6 +111,10 @@ MonoBehaviour:
   bombPrefab: {fileID: 8651253697320581944, guid: d4b99395c263f894daaa9387180d8c84, type: 3}
   textHP: {fileID: 7561452825656901133}
   textShot: {fileID: 8936948166689403836}
+  eyes:
+  - {fileID: 195955988099354532}
+  - {fileID: 195955987044740737}
+  - {fileID: 195955987852081053}
   fMoveSpeed: 5
   fShotPower: 15
   fHP: 100
@@ -136,6 +141,7 @@ MonoBehaviour:
   - {fileID: -358853858065591789}
   - {fileID: -6258746581414865721}
   - {fileID: -614869669781973796}
+  - {fileID: 307098927776001189}
   sceneViewId: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
@@ -171,6 +177,30 @@ MonoBehaviour:
   m_SynchronizeAngularVelocity: 1
   m_TeleportEnabled: 0
   m_TeleportIfDistanceGreaterThan: 3
+--- !u!114 &307098927776001189
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 195955986716403910}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b8c4a61274f60b4ea5fb4299cfdbf14, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ShowLayerWeightsInspector: 1
+  ShowParameterInspector: 1
+  m_SynchronizeParameters:
+  - Type: 4
+    SynchronizeType: 0
+    Name: IsMoving
+  - Type: 9
+    SynchronizeType: 0
+    Name: Attack
+  m_SynchronizeLayers:
+  - SynchronizeType: 0
+    LayerIndex: 0
 --- !u!1 &195955986957145824
 GameObject:
   m_ObjectHideFlags: 0
@@ -300,7 +330,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &195955987044740742
 Transform:
   m_ObjectHideFlags: 0
