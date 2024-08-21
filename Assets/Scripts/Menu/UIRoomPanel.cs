@@ -118,6 +118,12 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
     /// </summary>
     void OnCancelButtonClick()
     {
+        PhotonHashtable customProps = PhotonNetwork.CurrentRoom.CustomProperties;
+
+        customProps["Dictionary"] = playersReady;
+
+        PhotonNetwork.CurrentRoom.SetCustomProperties(customProps);
+
         PhotonNetwork.LeaveRoom();
         // 시간 지연으로 인해 방을 퇴장하였는데 방장의 시작 콜에 의해 씬이 넘어가는것을 방지
         PhotonNetwork.AutomaticallySyncScene = false;
@@ -280,6 +286,8 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
     {
         foreach (int actorNumber in playerEntries.Keys)
         {
+            print(actorNumber);
+
             // SetSiblingIndex => Hierachy상 내 부모 안에서 다른 객체 중 순서를 지정하고 싶을때 사용
             playerEntries[actorNumber].transform.SetSiblingIndex(actorNumber);
         }
@@ -321,6 +329,18 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
 
     public override void OnMasterClientSwitched(Player newMasterClient)
     {
-        
+        if (PhotonNetwork.LocalPlayer.ActorNumber == newMasterClient.ActorNumber)
+        {
+            PhotonHashtable props = PhotonNetwork.CurrentRoom.CustomProperties;
+
+            if (props.ContainsKey("Dictionary"))
+            {
+                playersReady = (Dictionary<int, bool>)props["Dictionary"];
+
+                buttonStart.gameObject.SetActive(true);
+                dropdownDiff.gameObject.SetActive(true);
+                textDiff.gameObject.SetActive(false);
+            }
+        }
     }
 }
