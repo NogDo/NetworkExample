@@ -58,6 +58,7 @@ public class UIMenuPanel : MonoBehaviour
     void OnPlayerNameChangeButtonClick()
     {
         PhotonNetwork.LocalPlayer.NickName = inputPlayerName.text;
+        CFirebaseManager.Instance.UpdatePlayerName(inputPlayerName.text);
 
         playerName.text = $"æ»≥Á«œººø‰, {PhotonNetwork.LocalPlayer.NickName}";
     }

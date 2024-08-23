@@ -17,6 +17,8 @@ public class UIPlayerEntry : MonoBehaviour
     public Toggle[] toggles;
     public ToggleGroup toggleGroup;
 
+    public PlayerCurrentEye currentEye;
+
     public bool isMine => player == PhotonNetwork.LocalPlayer;
     #endregion
 
@@ -30,5 +32,18 @@ public class UIPlayerEntry : MonoBehaviour
         // 아래는 알림 없이 값을 변경하는 방법이다.
         // isOn의 값을 수정하지만 onValueChanged가 호출되지 않는다.
         toggleReady.SetIsOnWithoutNotify(false);
+    }
+}
+
+[System.Serializable]
+public class PlayerCurrentEye
+{
+    #region public 변수
+    public EPlayerEye eye;
+    #endregion
+
+    public EPlayerEye GetCurrentEye()
+    {
+        return eye;
     }
 }

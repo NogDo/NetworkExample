@@ -146,7 +146,10 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
         localPlayer.SetCustomProperties(customProps);
     }
 
-
+    /// <summary>
+    /// 눈 변경 토글을 클릭했을 때
+    /// </summary>
+    /// <param name="isOn">활성화 여부</param>
     public void OnEyeToggleClick(bool isOn)
     {
         if (isOn)
@@ -158,11 +161,12 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
             foreach (Toggle toggle in group.ActiveToggles())
             {
                 customProrps["Eyes"] = toggle.GetComponent<CPlayerEye>().Eye;
+                playerEntries[PhotonNetwork.LocalPlayer.ActorNumber].currentEye.eye = toggle.GetComponent<CPlayerEye>().Eye;
             }
 
             localPlayer.SetCustomProperties(customProrps);
 
-            print(((EPlayerEye)customProrps["Eyes"]).ToString());
+            CFirebaseManager.Instance.SetEyeType(playerEntries[PhotonNetwork.LocalPlayer.ActorNumber].currentEye);
         }
 
         else
@@ -234,7 +238,9 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
             }
 
             PhotonHashtable customProps = PhotonNetwork.LocalPlayer.CustomProperties;
-            customProps["Eyes"] = (EPlayerEye)0;
+
+            customProps["Eyes"] = CFirebaseManager.Instance.eyeData.eye;
+            playerEntry.currentEye = CFirebaseManager.Instance.eyeData;
 
             PhotonNetwork.LocalPlayer.SetCustomProperties(customProps);
         }
@@ -245,6 +251,7 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
         }
 
         playerEntries[newPlayer.ActorNumber] = playerEntry;
+        playerEntry.toggles[(int)playerEntry.currentEye.eye].isOn = true;
 
         if (PhotonNetwork.IsMasterClient)
         {
@@ -286,8 +293,6 @@ public class UIRoomPanel : MonoBehaviourPunCallbacks
     {
         foreach (int actorNumber in playerEntries.Keys)
         {
-            print(actorNumber);
-
             // SetSiblingIndex => Hierachy상 내 부모 안에서 다른 객체 중 순서를 지정하고 싶을때 사용
             playerEntries[actorNumber].transform.SetSiblingIndex(actorNumber);
         }

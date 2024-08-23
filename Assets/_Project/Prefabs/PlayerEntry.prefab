@@ -947,6 +947,8 @@ MonoBehaviour:
   - {fileID: 6335853599298306290}
   - {fileID: 5409517685875958251}
   toggleGroup: {fileID: 8593137688749532807}
+  currentEye:
+    eye: 0
 --- !u!1 &6045742460188418439
 GameObject:
   m_ObjectHideFlags: 0

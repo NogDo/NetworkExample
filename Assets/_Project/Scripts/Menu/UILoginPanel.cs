@@ -1,3 +1,4 @@
+using Firebase.Auth;
 using Photon.Pun;
 using System.Collections;
 using System.Collections.Generic;
@@ -78,11 +79,7 @@ public class UILoginPanel : MonoBehaviour
     {
         buttonSignup.interactable = false;
 
-        CFirebaseManager.Instance.Signup(inputID.text, inputPassword.text, (user) =>
-        {
-            print($"회원가입 성공!");
-            buttonSignup.interactable = true;
-        });
+        CFirebaseManager.Instance.Signup(inputID.text, inputPassword.text, userDataCallback: LoginSuccess);
     }
 
     /// <summary>
@@ -92,10 +89,7 @@ public class UILoginPanel : MonoBehaviour
     {
         buttonLogin.interactable = false;
 
-        CFirebaseManager.Instance.Login(inputID.text, inputPassword.text, (user) =>
-        {
-            buttonLogin.interactable = true;
-        });
+        CFirebaseManager.Instance.Login(inputID.text, inputPassword.text, userDataCallback: LoginSuccess);
     }
 
     /// <summary>
@@ -103,7 +97,7 @@ public class UILoginPanel : MonoBehaviour
     /// </summary>
     public void OnLoginButtonClick_HW0820()
     {
-        CSqlManager.Instance.Login(inputID.text, inputPassword.text, LoginSuccess, LoginFailure);
+        //CSqlManager.Instance.Login(inputID.text, inputPassword.text, LoginSuccess, LoginFailure);
     }
 
     /// <summary>
@@ -118,9 +112,9 @@ public class UILoginPanel : MonoBehaviour
     /// <summary>
     /// 로그인이 성공했을 때, 포톤 네크워크에 연결한다.
     /// </summary>
-    void LoginSuccess(string nickName)
+    void LoginSuccess(UserData user)
     {
-        PhotonNetwork.LocalPlayer.NickName = nickName;
+        PhotonNetwork.LocalPlayer.NickName = user.userName;
         PhotonNetwork.ConnectUsingSettings();
 
         inputID.interactable = false;

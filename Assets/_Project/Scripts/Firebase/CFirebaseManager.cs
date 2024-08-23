@@ -46,8 +46,17 @@ public class CFirebaseManager : MonoBehaviour
     /// 파이어베이스가 초기화되면 호출할 이벤트
     /// </summary>
     public event Action OnInit;
+    /// <summary>
+    /// 현재 유저가 메세지를 받으면 호출할 이벤트
+    /// </summary>
+    public event Action<string> OnReceive;
+    /// <summary>
+    /// 로그인 또는 회원가입 후에 호출할 이벤트
+    /// </summary>
+    public event Action<FirebaseUser> OnLogin;
 
     public UserData userData;
+    public PlayerCurrentEye eyeData;
 
     public DatabaseReference usersRef;
 
@@ -57,19 +66,27 @@ public class CFirebaseManager : MonoBehaviour
     public bool IsInitialized { get; private set; } = false;
     #endregion
 
-    #region private 변수
-
-    #endregion
-
     void Awake()
     {
         instance = this;
         DontDestroyOnLoad(gameObject);
+
+        OnLogin += OnLogined;
     }
 
     void Start()
     {
         InitializeAsync();
+    }
+
+    /// <summary>
+    /// 로그인 됐을 때 호출할 메서드
+    /// </summary>
+    /// <param name="user">로그인한 유저</param>
+    void OnLogined(FirebaseUser user)
+    {
+        DatabaseReference msgRef = DB.GetReference($"msg/{user.UserId}");
+        msgRef.ChildAdded += ReceiveMessageEventHandler;
     }
 
     /// <summary>
@@ -135,7 +152,7 @@ public class CFirebaseManager : MonoBehaviour
     /// <param name="email">이메일</param>
     /// <param name="password">비밀번호</param>
     /// <param name="callback">콜백함수</param>
-    public async void Login(string email, string password, Action<FirebaseUser> callback = null)
+    public async void Login(string email, string password, Action<FirebaseUser> callback = null, Action<UserData> userDataCallback = null)
     {
         AuthResult result = await Auth.SignInWithEmailAndPasswordAsync(email, password);
 
@@ -159,15 +176,18 @@ public class CFirebaseManager : MonoBehaviour
             userData = JsonConvert.DeserializeObject<UserData>(json);
 
             print(json);
+
+            OnLogin?.Invoke(result.User);
+            callback?.Invoke(result.User);
+            userDataCallback?.Invoke(userData);
+
+            GetEyeType();
         }
 
         else
         {
             UIFirebasePanelManager.Instance.Dialog("로그인 정보에 문제가 있습니다.");
         }
-        
-
-        callback?.Invoke(result.User);
     }
 
     /// <summary>
@@ -176,7 +196,7 @@ public class CFirebaseManager : MonoBehaviour
     /// <param name="email">이메일</param>
     /// <param name="password">비밀번호</param>
     /// <param name="callback">콜백함수</param>
-    public async void Signup(string email, string password, Action<FirebaseUser> callback = null)
+    public async void Signup(string email, string password, Action<FirebaseUser> callback = null, Action<UserData> userDataCallback = null)
     {
         try
         {
@@ -192,14 +212,15 @@ public class CFirebaseManager : MonoBehaviour
 
             this.userData = userData;
 
+            OnLogin?.Invoke(result.User);
             callback?.Invoke(result.User);
+            userDataCallback?.Invoke(userData);
         }
 
         catch (FirebaseException e)
         {
             Debug.Log(e.Message);
         }
-        
     }
 
     /// <summary>
@@ -229,6 +250,167 @@ public class CFirebaseManager : MonoBehaviour
         {
             await Auth.CurrentUser.UpdatePasswordAsync(password);
         }
+
+        callback?.Invoke();
+    }
+
+    /// <summary>
+    /// 현재 접속중인 유저의 직업을 업데이트한다.
+    /// </summary>
+    /// <param name="class">변경할 직업</param>
+    /// <param name="callback">콜백 함수</param>
+    public async void UpdateCharacterClass(UserData.EClass @class, Action callback = null)
+    {
+        //DatabaseReference user = usersRef.Child("characterClass");
+
+        // 이런 용법도 존재
+        string refKey = nameof(UserData.characterClass);
+        DatabaseReference classRef = usersRef.Child(refKey);
+
+        await classRef.SetValueAsync((int)@class);
+
+        userData.characterClass = @class;
+
+        callback?.Invoke();
+    }
+
+    /// <summary>
+    /// 현재 접속중인 유저의 레벨을 업데이트한다.
+    /// </summary>
+    /// <param name="callback">콜백 함수</param>
+    public async void UpdateCharacterLevel(Action callback = null)
+    {
+        int level = userData.level + 1;
+
+        string refKey = nameof(UserData.level);
+        DatabaseReference levelRef = usersRef.Child(refKey);
+
+        await levelRef.SetValueAsync(level);
+
+        userData.level = level;
+
+        callback?.Invoke();
+    }
+
+    /// <summary>
+    /// 현재 접속중인 유저의 주소를 업데이트한다.
+    /// </summary>
+    /// <param name="address">주소</param>
+    /// <param name="callback">콜백 함수</param>
+    public async void UpdateCharacterAddress(string address, Action callback = null)
+    {
+        string refKey = nameof(UserData.address);
+        DatabaseReference addressRef = usersRef.Child(refKey);
+
+        await addressRef.SetValueAsync(address);
+
+        userData.address = address;
+
+        callback?.Invoke();
+    }
+
+    /// <summary>
+    /// 현재 접속중인 유저 정보를 업데이트한다. (중복제거한 함수)
+    /// </summary>
+    /// <param name="childName">데이터베이스 Key 이름</param>
+    /// <param name="value"></param>
+    /// <param name="callback"></param>
+    public async void UpdateUserData(string childName, object value, Action<object> callback = null)
+    {
+        DatabaseReference targetRef = usersRef.Child(childName);
+
+        await targetRef.SetValueAsync(value);
+    }
+
+    /// <summary>
+    /// 메세지를 보낸다.
+    /// </summary>
+    /// <param name="receiver">받을 사람</param>
+    /// <param name="message">메세지 클래스</param>
+    public void SendMessage(string receiver, Message message)
+    {
+        DatabaseReference msgRef = DB.GetReference($"msg/{receiver}");
+
+        string msgJson = JsonConvert.SerializeObject(message);
+
+        msgRef.Child(message.sender + message.sendTime).SetRawJsonValueAsync(msgJson);
+    }
+
+    /// <summary>
+    /// 메세지를 받았을 때 실행할 이벤트 핸들러
+    /// </summary>
+    /// <param name="sender">이벤트를 호출한 객체의 고유 Key 구분을 위한 객체</param>
+    /// <param name="args"></param>
+    public void ReceiveMessageEventHandler(object sender, ChildChangedEventArgs args)
+    {
+        if (args.DatabaseError != null)
+        {
+            Debug.LogError(args.DatabaseError);
+            return;
+        }
+
+        else
+        {
+            string rawJson = args.Snapshot.GetRawJsonValue();
+
+            Message msg = JsonConvert.DeserializeObject<Message>(rawJson);
+
+            string message = $"보낸이 : {msg.sender}\n내용 : {msg.message}\n보낸 시간 : {msg.GetSendTime()}";
+
+            OnReceive?.Invoke(message);
+        }
+    }
+
+    /// <summary>
+    /// 플레이어 눈 타입을 데이터베이스에 저장한다.
+    /// </summary>
+    /// <param name="currentEye">현재 눈 타입</param>
+    public void SetEyeType(PlayerCurrentEye currentEye)
+    {
+        DatabaseReference eyesRef = DB.GetReference($"equip/{Auth.CurrentUser.UserId}");
+
+        string eyesJson = JsonConvert.SerializeObject(currentEye);
+
+        eyesRef.SetRawJsonValueAsync(eyesJson);
+    }
+
+    /// <summary>
+    /// 현재 플레이어가 착용중인 Eye의 데이터를 가져온다, 만약 존재하지 않는다면 데이터를 생성한다.
+    /// </summary>
+    public async void GetEyeType()
+    {
+        DatabaseReference eyeRef = DB.GetReference($"equip/{Auth.CurrentUser.UserId}");
+
+        DataSnapshot eyeValues = await eyeRef.GetValueAsync();
+
+        DataSnapshot eye = eyeValues.Child("eye");
+
+        if (eye.Exists)
+        {
+            eyeData.eye = (EPlayerEye)int.Parse(eye.GetValue(false).ToString());
+        }
+
+        else
+        {
+            eyeData.eye = EPlayerEye.GLASSES;
+            SetEyeType(eyeData);
+        }
+    }
+
+
+    /// <summary>
+    /// 현재 접속중인 유저의 이름을 업데이트한다.
+    /// </summary>
+    /// <param name="name">이름</param>
+    /// <param name="callback">콜백 함수</param>
+    public async void UpdatePlayerName(string name, Action callback = null)
+    {
+        string refKey = nameof(UserData.userName);
+        DatabaseReference nameRef = usersRef.Child(refKey);
+
+        await nameRef.SetValueAsync(name);
+
+        userData.userName = name;
 
         callback?.Invoke();
     }

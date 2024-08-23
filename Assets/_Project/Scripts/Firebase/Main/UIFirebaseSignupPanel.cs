@@ -26,7 +26,6 @@ public class UIFirebaseSignupPanel : MonoBehaviour
     /// </summary>
     public void OnSignupButtonClick()
     {
-        // TODO:비밀번호 확인 로직짜기
         if (inputPassword.text.Equals(inputPasswordConfirm.text))
         {
             CFirebaseManager.Instance.Signup(inputId.text, inputPassword.text, SetUser);

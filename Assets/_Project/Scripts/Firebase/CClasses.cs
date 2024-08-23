@@ -32,7 +32,7 @@ public class UserData
     public UserData(string userId)
     {
         this.userId = userId;
-        userName = "무명의 전사";
+        userName = "무명의전사";
         level = 1;
         characterClass = EClass.WARRIOR;
         address = "None";
@@ -46,5 +46,8 @@ public class Message
     public string message;
     public long sendTime;
 
-    public DateTime SendTime { get => new DateTime(sendTime); }
+    public DateTime GetSendTime()
+    {
+        return new DateTime(sendTime);
+    }
 }

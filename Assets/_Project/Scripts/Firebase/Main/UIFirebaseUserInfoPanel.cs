@@ -61,6 +61,6 @@ public class UIFirebaseUserInfoPanel : MonoBehaviour
     /// </summary>
     public void OnGameStartButtonClick()
     {
-        
+        SceneManager.LoadScene("GameScene");
     }
 }
